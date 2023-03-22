@@ -4,13 +4,10 @@ public class Card {
     private String expiryDate;
     private int pin;
 
-    public Card(String cardNumber, String cardHolderName, String expiryDate) {
+    public Card(String cardNumber, String cardHolderName, String expiryDate, int pin) {
         this.cardNumber = cardNumber;
         this.cardHolderName = cardHolderName;
         this.expiryDate = expiryDate;
-    }
-
-    public void setPin(int pin) {
         this.pin = pin;
     }
 
@@ -22,11 +19,11 @@ public class Card {
         return this.cardNumber;
     }
     
-    public Card getCard() {
-        return card;
+    public String getCardHolderName() {
+        return this.cardHolderName;
     }
-    
-    public void setCard(Card card) {
-        this.card = card;
+
+    public String getExpiryDate() {
+        return this.expiryDate;
     }
 }
