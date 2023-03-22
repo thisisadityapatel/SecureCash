@@ -21,4 +21,12 @@ public class Card {
     public String getCardNumber() {
         return this.cardNumber;
     }
+    
+    public Card getCard() {
+        return card;
+    }
+    
+    public void setCard(Card card) {
+        this.card = card;
+    }
 }
