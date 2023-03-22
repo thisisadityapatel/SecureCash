@@ -1,13 +1,13 @@
 public class Customer {
     private int customerID;
-    private Account savingsAccount;
-    private Account checkingAccount;
-    private Account creditAccount;
+    private SavingsAccount savingsAccount;
+    private ChequeingsAccount chequeingsAccount;
+    private CreditAccount creditAccount;
 
     public Customer(int customerID) {
         this.customerID = customerID;
         this.savingsAccount = new SavingsAccount();
-        this.checkingAccount = new CheckingAccount();
+        this.chequeingsAccount = new CheckingAccount();
         this.creditAccount = new CreditAccount();
     }
 
