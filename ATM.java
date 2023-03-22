@@ -69,9 +69,7 @@ public class ATM {
 
     // change customer pin
     public boolean changeAccountPin(Customer customer, String newPin) {
-        if (customer.setPin(newPin) == false) {
-            return false;
-        }
+        customer.getCard().setPin(newPin);
         return true;
     }
 
