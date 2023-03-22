@@ -2,9 +2,9 @@ cardNumber				                //String format "XXXXXXXXXXXXXXXX" 16 digits
 PIN					                      //Integer format XXXX 4 digits
 CustomerID/EmloyeeNumber/ClientID	//Integer format XXXXX 5 digits
 accountNumber				              //String[] format XXXXXXX 7 digits
+Balance					                  //Double
 FirstName 				                //String
 LastName  				                //String
 DateOfBirth				                //String format "DDMMYYYY"
 cardHolderName				            //String
-Balance					                  //Double
 [Empty " " character for better visualization]
