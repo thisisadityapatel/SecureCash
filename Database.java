@@ -136,11 +136,11 @@ public class Database {
         System.out.println("Hey there!!");
         Database testing = new Database();
 
-        Card temp = new Card("1234123412341234", "Aditya", "");
-        System.out.println(testing.verifyUser(temp, 1234));
+        //Card temp = new Card("1234123412341234", "Aditya", "");
+        //System.out.println(testing.verifyUser(temp, 1234));
 
-        Customer tempCust = new Customer(12346);
-        System.out.println(testing.retrieve(tempCust));
+        //Customer tempCust = new Customer(12346);
+        //System.out.println(testing.retrieve(tempCust));
 
         System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0, null), 20.2));
     }
