@@ -89,14 +89,11 @@ public class Database {
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
             s = new Scanner(new File(oldfilename));
-            while (s.hasNextLine()) {
-                String cardNumber = s.nextLine();
-                pw.println(cardNumber);
-                String PIN = s.nextLine();
-                pw.println(PIN);
-                String custID = s.nextLine();
-                pw.println(custID);
 
+            while (s.hasNextLine()) {
+                for (int i = 0; i < 3; i++) {
+                    pw.println(s.nextLine());
+                }
                 int flag = 0;
                 String allAccounts = s.nextLine();
                 List<String> tempAcc = Arrays.asList(allAccounts.split(","));
@@ -107,7 +104,6 @@ public class Database {
                     }
                 }
                 pw.println(allAccounts);
-
                 String oldAccountAmount = s.nextLine();
                 if (flag == 1) {
                     pw.println(newAmount);
@@ -146,6 +142,6 @@ public class Database {
         Customer tempCust = new Customer(12346);
         System.out.println(testing.retrieve(tempCust));
 
-        System.out.println(testing.updateAccountAmount(new Account(1234567, 0, 0.0, null), 20.2));
+        System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0, null), 20.2));
     }
 }
