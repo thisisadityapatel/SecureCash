@@ -4,31 +4,31 @@ public class Customer {
     private ChequeingsAccount chequeingsAccount;
     private CreditAccount creditAccount;
 
-    public Customer(int customerID) {
+    public Customer(int customerID, SavingsAccount savingsAccount, ChequeingsAccount chequeingsAccount, CreditAccount creditAccount) {
         this.customerID = customerID;
-        this.savingsAccount = new SavingsAccount();
-        this.chequeingsAccount = new CheckingAccount();
-        this.creditAccount = new CreditAccount();
+        this.savingsAccount = savingsAccount;
+        this.chequeingsAccount = chequeingsAccount;
+        this.creditAccount = creditAccount;
     }
 
     public int getCustomerID() {
         return customerID;
     }
-    
-    public Account getSavingsAccount() {
+
+    public SavingsAccount getSavingsAccount() {
         return savingsAccount;
     }
-    
-    public Account getCheckingAccount() {
-        return checkingAccount;
+
+    public ChequeingsAccount getChequeingsAccount() {
+        return chequeingsAccount;
     }
-    
-    public Account getCreditAccount() {
+
+    public CreditAccount getCreditAccount() {
         return creditAccount;
     }
 
     public boolean login(Card card, int pin) {
-        if (card.getPin() == pin) {
+        if (card.getPin().equals(pin)) {
             return true;
         } else {
             return false;
