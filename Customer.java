@@ -6,9 +6,9 @@ public class Customer {
 
     public Customer(int customerID) {
         this.customerID = customerID;
-        this.savingsAccount = new Account();
-        this.checkingAccount = new Account();
-        this.creditAccount = new Account();
+        this.savingsAccount = new SavingsAccount();
+        this.checkingAccount = new CheckingAccount();
+        this.creditAccount = new CreditAccount();
     }
 
     public int getCustomerID() {
