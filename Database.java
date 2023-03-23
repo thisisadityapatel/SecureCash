@@ -200,10 +200,11 @@ public class Database {
         // System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0,
         // null), 20.2));
 
-        // System.out.println(testing.updatePin(new Card("4321432143214321", "", "",
-        // 1234), 7891));
+        System.out.println(testing.updatePin(new Card("4321432143214321", "", "",
+                1234), 7891));
 
-        testing.addAccountTransaction(new Transaction("21122002", 120.5, new Customer(12345, null, null, null),
-                new Account(1234569, 0, 0, null)));
+        // testing.addAccountTransaction(new Transaction("21122002", 120.5, new
+        // Customer(12345, null, null, null),
+        // new Account(1234569, 0, 0, null)));
     }
 }
