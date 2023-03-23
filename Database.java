@@ -152,7 +152,7 @@ public class Database {
                     pw.println(PIN);
                 }
                 for (int i = 0; i < 8; i++) {
-                    pw.print(s.nextLine());
+                    pw.println(s.nextLine());
                 }
             }
             s.close();
@@ -169,6 +169,21 @@ public class Database {
     }
 
     // appending account transaction to database
+    public void addAccountTransaction(Transaction transaction) {
+        try {
+            FileWriter fw = new FileWriter("transactionDatabase.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            pw.println(transaction.getAccount().getAccountNumber());
+            pw.println(transaction.getAmount());
+            pw.println(transaction.getDate());
+            pw.println(" ");
+            pw.flush();
+            pw.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     // getting all account transactions
 
@@ -185,6 +200,10 @@ public class Database {
         // System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0,
         // null), 20.2));
 
-        System.out.println(testing.updatePin(new Card("1234123412341234", "", "", 1234), 7891));
+        // System.out.println(testing.updatePin(new Card("4321432143214321", "", "",
+        // 1234), 7891));
+
+        testing.addAccountTransaction(new Transaction("21122002", 120.5, new Customer(12345, null, null, null),
+                new Account(1234569, 0, 0, null)));
     }
 }
