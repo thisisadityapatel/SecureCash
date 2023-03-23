@@ -4,6 +4,13 @@ public class Transaction {
     private Customer customer;
     private Account account;
 
+    public Transaction(String date, Double amount, Customer customer, Account account) {
+        this.date = date;
+        this.amount = amount;
+        this.customer = customer;
+        this.account = account;
+    }
+
     public String getDate() {
         return date;
     }
