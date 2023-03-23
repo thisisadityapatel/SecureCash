@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Database {
@@ -185,6 +186,56 @@ public class Database {
 
     // getting all account transactions
 
+    // extracting all the data from the database
+    public ArrayList<retrieveDatabaseData> extractDatabase() {
+        ArrayList<retrieveDatabaseData> output = new ArrayList<retrieveDatabaseData>();
+        try {
+            File file = new File("bankDatabase.txt");
+            Scanner in = new Scanner(file);
+
+            while (in.hasNextLine()) {
+
+                String cardNumber = in.nextLine();
+                int pin = Integer.parseInt(in.nextLine());
+                int customerID = Integer.parseInt(in.nextLine());
+
+                // extracting all the account and their respective amounts
+                ArrayList<Integer> accounts = new ArrayList<Integer>();
+                ArrayList<Double> amounts = new ArrayList<Double>();
+                ArrayList<String> accountTypes = new ArrayList<String>();
+                List<String> accsAms = Arrays.asList(in.nextLine().split(","));
+                for (int i = 0; i < accsAms.size(); i++) {
+                    int accountNumber = Integer.parseInt(Arrays.asList(accsAms.get(i).split(":")).get(0));
+                    double accountAmount = Double.parseDouble(Arrays.asList(accsAms.get(i).split(":")).get(1));
+                    accounts.add(accountNumber);
+                    amounts.add(accountAmount);
+
+                    // adding the account type
+                    if ((int) (accountNumber / 100000) == 72) {
+                        accountTypes.add("saving");
+                    } else {
+                        accountTypes.add("checking");
+                    }
+                }
+
+                String firstName = in.nextLine();
+                String lastName = in.nextLine();
+                String dateofBirthday = in.nextLine();
+                String cardholderName = in.nextLine();
+                in.nextLine();
+
+                retrieveDatabaseData temp = new retrieveDatabaseData(cardNumber, pin, customerID, accounts, amounts,
+                        accountTypes,
+                        firstName, lastName, dateofBirthday, cardholderName);
+                output.add(temp);
+            }
+            in.close(); // closing the stream
+        } catch (IOException io) {
+            System.out.println(io.getMessage()); // printing error, if any
+        }
+        return output;
+    }
+
     public static void main(String[] args) {
         System.out.println("Hey there!!");
         Database testing = new Database();
@@ -194,7 +245,8 @@ public class Database {
 
         // System.out.println(testing.retrieveAccounts(12345));
 
-        System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0, null), 100000.00));
+        // System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0,
+        // null), 100000.00));
 
         // System.out.println(testing.updatePin(new Card("1234123412341234", "", "",
         // 1234), 1357));
@@ -202,5 +254,7 @@ public class Database {
         // testing.addAccountTransaction(new Transaction("21122002", 120.5, new
         // Customer(12345, null, null, null),
         // new Account(1234569, 0, 0, null)));
+
+        System.out.println(testing.extractDatabase());
     }
 }
