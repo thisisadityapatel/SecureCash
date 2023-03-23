@@ -1,8 +1,7 @@
 cardNumber				                //String format "XXXXXXXXXXXXXXXX" 16 digits
 PIN					                      //Integer format XXXX 4 digits
 CustomerID/EmloyeeNumber/ClientID	//Integer format XXXXX 5 digits
-accountNumber				              //String[] format XXXXXXX 7 digits
-Balance					                  //Double
+accountNumber:accountAmount			  //String[] format XXXXXXX 7 digits
 FirstName 				                //String
 LastName  				                //String
 DateOfBirth				                //String format "DDMMYYYY"
