@@ -3,12 +3,18 @@ public class Customer {
     private SavingsAccount savingsAccount;
     private ChequeingsAccount chequeingsAccount;
     private CreditAccount creditAccount;
+    private Card card;
 
-    public Customer(int customerID, SavingsAccount savingsAccount, ChequeingsAccount chequeingsAccount, CreditAccount creditAccount) {
+    public Customer(int customerID, SavingsAccount savingsAccount, ChequeingsAccount chequeingsAccount,
+            CreditAccount creditAccount) {
         this.customerID = customerID;
         this.savingsAccount = savingsAccount;
         this.chequeingsAccount = chequeingsAccount;
         this.creditAccount = creditAccount;
+    }
+
+    public Card getCard() {
+        return card;
     }
 
     public int getCustomerID() {

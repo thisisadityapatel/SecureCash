@@ -17,11 +17,10 @@ public class ATM {
             // missing code for updating database
             return true;
         } else {
-            customer.getCheckingAccount().setBalance(customer.getCheckingAccount().getBalance() + amount);
+            customer.getChequeingsAccount().setBalance(customer.getChequeingsAccount().getBalance() + amount);
             // missing code for updating database
             return true;
         }
-        return false;
     }
 
     // withdraw from customer
@@ -36,16 +35,15 @@ public class ATM {
             // missing code for updating database
             return true;
         } else {
-            double newBalance = customer.getCheckingAccount().getBalance() - amount;
+            double newBalance = customer.getChequeingsAccount().getBalance() - amount;
             if (newBalance < 0) {
                 return false;
             } else {
-                customer.getCheckingAccount().setBalance(newBalance);
+                customer.getChequeingsAccount().setBalance(newBalance);
             }
             // missing code for updating database
             return true;
         }
-        return false;
     }
 
     // transfer from sender to receiver
@@ -63,14 +61,14 @@ public class ATM {
         if (accType.equals("savings")) {
             return customer.getSavingsAccount().getBalance();
         } else {
-            return customer.getCheckingAccount().getBalance();
+            return customer.getChequeingsAccount().getBalance();
         }
     }
 
     // change customer pin
-    public boolean changeAccountPin(Customer customer, String newPin) {
-        customer.getCard().setPin(newPin);
-        return true;
+    public boolean changeAccountPin(Customer customer, int newPin) {
+        return customer.getCard().setPin(newPin);
+
     }
 
     // set ATM Balance

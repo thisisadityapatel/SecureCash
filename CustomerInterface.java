@@ -29,7 +29,7 @@ public class CustomerInterface {
     }
 
     // change pin of account
-    public boolean changePin(Customer customer, String newPin) {
+    public boolean changePin(Customer customer, int newPin) {
         return this.atm.changeAccountPin(customer, newPin);
     }
 

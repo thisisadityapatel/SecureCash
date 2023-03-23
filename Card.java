@@ -11,6 +11,11 @@ public class Card {
         this.pin = pin;
     }
 
+    public boolean setPin(int pin) {
+        this.pin = pin;
+        return true;
+    }
+
     public int getPin() {
         return this.pin;
     }
@@ -18,7 +23,7 @@ public class Card {
     public String getCardNumber() {
         return this.cardNumber;
     }
-    
+
     public String getCardHolderName() {
         return this.cardHolderName;
     }
