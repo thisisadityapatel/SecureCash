@@ -40,4 +40,8 @@ public class Customer {
             return false;
         }
     }
+
+    public void setCard(Card card) {
+        this.card = card;
+    }
 }
