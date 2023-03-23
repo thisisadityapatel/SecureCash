@@ -5,8 +5,8 @@ public class ATM {
     Database db;
 
     // constructor
-    public ATM() {
-        db = new Database();
+    public ATM(Database db) {
+        this.db = db;
         this.cashTotal = LIMIT;
     }
 
