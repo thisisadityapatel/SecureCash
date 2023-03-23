@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.Buffer;
 import java.util.*;
 
 public class Database {
@@ -122,11 +121,52 @@ public class Database {
             newFile.renameTo(dump);
         } catch (Exception err) {
             System.out.println(err.getMessage());
+            return false;
         }
         return true;
     }
 
     // updating the user PIN
+    public boolean updatePin(Card card, int newPin) {
+        String oldfilename = "bankDatabase.txt";
+        String tempname = "tempDatabase.txt";
+
+        File oldFile = new File(oldfilename);
+        File newFile = new File(tempname);
+
+        Scanner s = null;
+
+        try {
+            FileWriter fw = new FileWriter(tempname, false);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            s = new Scanner(new File(oldfilename));
+
+            while (s.hasNextLine()) {
+                String cardNumber = s.nextLine();
+                pw.println(cardNumber);
+                String PIN = s.nextLine();
+                if (cardNumber.equals(card.getCardNumber())) {
+                    pw.println(newPin);
+                } else {
+                    pw.println(PIN);
+                }
+                for (int i = 0; i < 8; i++) {
+                    pw.print(s.nextLine());
+                }
+            }
+            s.close();
+            pw.flush();
+            pw.close();
+            oldFile.delete();
+            File dump = new File(oldfilename);
+            newFile.renameTo(dump);
+        } catch (Exception err) {
+            System.out.println(err.getMessage());
+            return false;
+        }
+        return true;
+    }
 
     // appending account transaction to database
 
@@ -136,12 +176,15 @@ public class Database {
         System.out.println("Hey there!!");
         Database testing = new Database();
 
-        //Card temp = new Card("1234123412341234", "Aditya", "");
-        //System.out.println(testing.verifyUser(temp, 1234));
+        // Card temp = new Card("1234123412341234", "Aditya", "");
+        // System.out.println(testing.verifyUser(temp, 1234));
 
-        //Customer tempCust = new Customer(12346);
-        //System.out.println(testing.retrieve(tempCust));
+        // Customer tempCust = new Customer(12346);
+        // System.out.println(testing.retrieve(tempCust));
 
-        System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0, null), 20.2));
+        // System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0,
+        // null), 20.2));
+
+        System.out.println(testing.updatePin(new Card("1234123412341234", "", "", 1234), 7891));
     }
 }
