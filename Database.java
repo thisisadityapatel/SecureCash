@@ -185,6 +185,32 @@ public class Database {
     }
 
     // getting all account transactions
+    public ArrayList<Transaction> getStatement(int verifyAccountNumber) {
+        ArrayList<Transaction> output = new ArrayList<Transaction>();
+        try {
+            File file = new File("transactionDatabase.txt");
+            Scanner in = new Scanner(file);
+
+            while (in.hasNextLine()) {
+                int accountNumber = Integer.parseInt(in.nextLine());
+
+                if (accountNumber == verifyAccountNumber) {
+                    double amount = Double.parseDouble(in.nextLine());
+                    String date = in.nextLine();
+                    Transaction temp = new Transaction(date, amount, null, null);
+                    output.add(temp);
+                } else {
+                    in.nextLine();
+                    in.nextLine();
+                    in.nextLine();
+                }
+            }
+            in.close(); // closing the stream
+        } catch (IOException io) {
+            System.out.println(io.getMessage()); // printing error, if any
+        }
+        return output;
+    }
 
     // extracting all the data from the database
     public ArrayList<retrieveDatabaseData> extractDatabase() {
