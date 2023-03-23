@@ -28,7 +28,7 @@ public class Customer {
     }
 
     public boolean login(Card card, int pin) {
-        if (card.getPin().equals(pin)) {
+        if (card.getPin() == pin) {
             return true;
         } else {
             return false;
