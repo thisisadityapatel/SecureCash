@@ -28,7 +28,7 @@ public class Database {
                     in.close(); // terminating file stream
                     return true;
                 }
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 7; i++) {
                     in.nextLine();
                 }
             }
@@ -40,7 +40,7 @@ public class Database {
     }
 
     // retrieve account details from database
-    public List<Integer> retrieve(Customer customer) {
+    public List<Integer> retrieveAccounts(int custID) {
         List<String> tempAcc = new ArrayList<String>();
         try {
             File file = new File("bankDatabase.txt");
@@ -51,18 +51,17 @@ public class Database {
                     in.nextLine();
                 }
                 int customerId = Integer.parseInt(in.nextLine());
-
                 // id verification
-                if (customer.getCustomerID() == customerId) {
+                if (custID == customerId) {
                     tempAcc = Arrays.asList(in.nextLine().split(","));
-                    List<Integer> userAccounts = new ArrayList<Integer>();
+                    List<Integer> outputAccounts = new ArrayList<Integer>();
                     for (int i = 0; i < tempAcc.size(); i++) {
-                        userAccounts.add(Integer.parseInt(tempAcc.get(i)));
+                        outputAccounts.add(Integer.parseInt(Arrays.asList(tempAcc.get(i).split(":")).get(0)));
                     }
                     in.close();
-                    return userAccounts;
+                    return outputAccounts;
                 }
-                for (int i = 0; i < 7; i++) {
+                for (int i = 0; i < 6; i++) {
                     in.nextLine();
                 }
             }
@@ -93,22 +92,21 @@ public class Database {
                 for (int i = 0; i < 3; i++) {
                     pw.println(s.nextLine());
                 }
-                int flag = 0;
                 String allAccounts = s.nextLine();
                 List<String> tempAcc = Arrays.asList(allAccounts.split(","));
+                List<String> tempAcc2 = tempAcc;
                 for (int i = 0; i < tempAcc.size(); i++) {
-                    if (Integer.parseInt(tempAcc.get(i)) == account.getAccountNumber()) {
-                        flag = 1;
-                        break;
+                    int thisAccount = Integer.parseInt(Arrays.asList(tempAcc.get(i).split(":")).get(0));
+                    if (thisAccount == account.getAccountNumber()) {
+                        tempAcc2.set(i, (thisAccount + ":" + newAmount));
                     }
                 }
-                pw.println(allAccounts);
-                String oldAccountAmount = s.nextLine();
-                if (flag == 1) {
-                    pw.println(newAmount);
-                } else {
-                    pw.println(oldAccountAmount);
+                String test = "";
+                test += tempAcc2.get(0);
+                for (int i = 1; i < tempAcc2.size(); i++) {
+                    test += "," + tempAcc2.get(i);
                 }
+                pw.println(test);
                 for (int i = 0; i < 5; i++) {
                     pw.println(s.nextLine());
                 }
@@ -151,7 +149,7 @@ public class Database {
                 } else {
                     pw.println(PIN);
                 }
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 7; i++) {
                     pw.println(s.nextLine());
                 }
             }
@@ -194,14 +192,12 @@ public class Database {
         // Card temp = new Card("1234123412341234", "Aditya", "");
         // System.out.println(testing.verifyUser(temp, 1234));
 
-        // Customer tempCust = new Customer(12346);
-        // System.out.println(testing.retrieve(tempCust));
+        // System.out.println(testing.retrieveAccounts(12345));
 
-        // System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0,
-        // null), 20.2));
+        System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0, null), 100000.00));
 
-        System.out.println(testing.updatePin(new Card("4321432143214321", "", "",
-                1234), 7891));
+        // System.out.println(testing.updatePin(new Card("1234123412341234", "", "",
+        // 1234), 1357));
 
         // testing.addAccountTransaction(new Transaction("21122002", 120.5, new
         // Customer(12345, null, null, null),
