@@ -2,15 +2,12 @@ public class Customer {
     private int customerID;
     private SavingsAccount savingsAccount;
     private ChequeingsAccount chequeingsAccount;
-    private CreditAccount creditAccount;
     private Card card;
 
-    public Customer(int customerID, SavingsAccount savingsAccount, ChequeingsAccount chequeingsAccount,
-            CreditAccount creditAccount) {
+    public Customer(int customerID, SavingsAccount savingsAccount, ChequeingsAccount chequeingsAccount) {
         this.customerID = customerID;
         this.savingsAccount = savingsAccount;
         this.chequeingsAccount = chequeingsAccount;
-        this.creditAccount = creditAccount;
     }
 
     public Card getCard() {
@@ -29,8 +26,12 @@ public class Customer {
         return chequeingsAccount;
     }
 
-    public CreditAccount getCreditAccount() {
-        return creditAccount;
+    public void setSavingsAccount(SavingsAccount s){
+        this.savingsAccount = s;
+    }
+    
+    public void setChequingAccount(ChequeingsAccount ch){
+        this.chequeingsAccount = ch;
     }
 
     public boolean login(Card card, int pin) {
