@@ -14,6 +14,38 @@ public class Database {
         return databaseID;
     }
 
+    // get atm balance
+    public Double getLastAtmBalance() {
+        Double returnAmount = 0.0;
+        try {
+            File file = new File("atmBalanceDatabase.txt");
+            Scanner in = new Scanner(file);
+
+            while (in.hasNextLine()) {
+                returnAmount = Double.parseDouble(in.nextLine());
+            }
+            in.close();
+        } catch (IOException io) {
+            System.out.println(io.getMessage()); // printing error, if any
+        }
+        return returnAmount;
+    }
+
+    public boolean updateLastAtmBalance(Double amount) {
+        try {
+            FileWriter fw = new FileWriter("atmBalanceDatabase.txt", false);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            pw.print(amount);
+            pw.flush();
+            pw.close();
+            return true;
+        } catch (IOException err) {
+            System.out.println(err.getMessage());
+        }
+        return false;
+    }
+
     // verify user from database
     public boolean verifyUser(Card card, int verifyPin) {
         try {
@@ -281,6 +313,10 @@ public class Database {
         // Customer(12345, null, null, null),
         // new Account(1234569, 0, 0, null)));
 
-        System.out.println(testing.extractDatabase());
+        // System.out.println(testing.extractDatabase());
+
+        // System.out.println(testing.getLastAtmBalance());
+
+        System.out.println(testing.updateLastAtmBalance(2002.35));
     }
 }
