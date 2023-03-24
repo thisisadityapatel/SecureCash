@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.text.DecimalFormat;
 
 public class ATMSystemMain implements ActionListener {
 
@@ -13,6 +14,8 @@ public class ATMSystemMain implements ActionListener {
     private JTextField card;
     private Database db;
     public static ArrayList<Customer> custList = new ArrayList<Customer>();
+    public static ArrayList<Employee> empList = new ArrayList<Employee>();
+    public static ArrayList<retrieveDatabaseData> dbContents = new ArrayList<retrieveDatabaseData>();
 
     public ATMSystemMain (Database db) {
         this.db = db;
@@ -65,13 +68,33 @@ public class ATMSystemMain implements ActionListener {
     public static void main(String[] args) {
         Database db = new Database();
         ATMSystemMain ATMSystem = new ATMSystemMain(db);
-        SavingsAccount acc = new SavingsAccount(0, 0, 100000.0, null, 0);
-        Customer cust = new Customer(0, acc, null, null);
-        cust.setCard(new Card("1234123412341234", "Aditya", null, 1234));
-        custList.add(cust);
+        dbContents = db.extractDatabase();
+        for (retrieveDatabaseData i: dbContents){
+            if (Integer.toString(i.getCustomerID()).length() < 16){
+                Employee e = new Employee(i.getFirstName(), i.getLastName(), i.getDateOfBirthay(), i.getCustomerID(), i.getPin());
+                empList.add(e);
+            }
+            else{
+                Customer c = new Customer(i.getCustomerID(), null, null);
+                for (int idx=0; idx<i.getAccounts().size(); idx++){
+                    if (i.getAccountType().get(idx).equals("saving")){
+                        SavingsAccount s = new SavingsAccount(i.getAccounts().get(idx), i.getCustomerID(), i.getAmounts().get(idx), null, 0);
+                        c.setSavingsAccount(s);
+                    }
+                    if (i.getAccountType().get(idx).equals("checking")){
+                        ChequeingsAccount che = new ChequeingsAccount(i.getAccounts().get(idx), i.getCustomerID(), i.getAmounts().get(idx), null);
+                        c.setChequingAccount(che);
+                    }
+                }
+                Card atmCard = new Card(i.getCardNumber(), i.getFirstName(), null, i.getPin());
+                c.setCard(atmCard);
+                custList.add(c);
+            }
+        }
     }
 
     public void options(String type) {
+        DecimalFormat df = new DecimalFormat("$0.00");
 
         ATM atm = new ATM(db);
 
@@ -101,6 +124,7 @@ public class ATMSystemMain implements ActionListener {
                 System.out.println("4: Check Balance");
                 System.out.println("5: Change PIN");
                 System.out.println("6: Print Statements");
+                System.out.println("7: Logout");
                 int choice = sc.nextInt();
                 double amount = 0.0;
                 String accType = null;
@@ -115,16 +139,21 @@ public class ATMSystemMain implements ActionListener {
                         // input account type
                         System.out.println("Enter account type (savings/checking): ");
                         accType = sc.next();
-                        custinterface.withdraw(custList.get(0), amount, accType);
+                        System.out.println(custinterface.withdraw(custList.get(0), amount, accType));
                         break;
                     case 2:
                         // input amount
                         System.out.println("Enter amount: ");
-                        amount = sc.nextDouble();
+                        try {
+                            amount = sc.nextDouble();
+                        } catch (InputMismatchException e) {
+                            System.out.println("Invalid input. Please enter a valid number.");
+                            sc.next();
+                        }
                         // input account type
                         System.out.println("Enter account type (savings/checking): ");
                         accType = sc.next();
-                        custinterface.deposit(custList.get(0), amount, accType);
+                        System.out.println(custinterface.deposit(custList.get(0), amount, accType));
                         break;
                     case 3:
                         // input amount
@@ -139,7 +168,7 @@ public class ATMSystemMain implements ActionListener {
                         receiverAccType = sc.next();
                         for (Customer c : custList) {
                             if (c.getCard().getCardNumber() == receiver) {
-                                custinterface.transfer(custList.get(0), c, amount, accType, receiverAccType);
+                                System.out.println(custinterface.transfer(custList.get(0), c, amount, accType, receiverAccType));
                             }
                         }
                         break;
@@ -147,15 +176,50 @@ public class ATMSystemMain implements ActionListener {
                         // input account type
                         System.out.println("Enter account type (savings/checking): ");
                         accType = sc.next();
-                        System.out.println(custinterface.checkBalance(custList.get(0), accType));
+                        System.out.println(df.format(custinterface.checkBalance(custList.get(0), accType)));
                         break;
                     case 5:
                         // input account type
                         System.out.println("Enter newPin: ");
                         newPin = sc.nextInt();
-                        custinterface.changePin(custList.get(0), newPin);
+                        if (custinterface.changePin(custList.get(0), newPin) == true){
+                            System.out.println("Successfully Changed Pin");
+                        }else{
+                            System.out.println("Error Changing Pin");
+                        }
                         break;
                     case 6:
+                        System.out.println("Not implemented yet :(");
+                        break;
+                    case 7:
+                        System.out.println("Not implemented yet :(");
+                        break;
+                    default:
+                        System.out.println("Invalid choice");
+                }
+            }
+        }
+        else if (type == "employee") {
+            while (true) {
+                System.out.println("Enter your choice:");
+                System.out.println("1: Refill ATM Balance");
+                System.out.println("2: Get ATM Balance");
+                System.out.println("3: Logout");
+                int choice = sc.nextInt();
+                double amount = 0.0;
+                switch (choice) {
+                    case 1:
+                        // input amount
+                        System.out.println("Enter amount: ");
+                        amount = sc.nextDouble();
+                        System.out.println(empinterface.refillATM(amount));
+                        break;
+                    case 2:
+                        // input amount
+                        System.out.println("Balance is: ");
+                        System.out.println(df.format(empinterface.getATMBalance()));
+                        break;
+                    case 3:
                         System.out.println("Not implemented yet :(");
                         break;
                     default:
@@ -169,38 +233,37 @@ public class ATMSystemMain implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent click) {
         if (click.getSource() == login) {
-            boolean verify = false;
+            // boolean verify = false;
             String type = null;
             String num = null;
             int pin = 0;
-            while (verify!=true) {
-                // take inputs 
-                //System.out.println("Enter card number: ");
-                num = card.getText();
-                //System.out.println("Enter password: ");          
-                pin = Integer.parseInt(new String(password.getPassword()));
-                // verification process
-                if (num!=null & pin != 0){
-                    Card card = new Card(num, null, null, pin);
-                    if (db.verifyUser(card, pin)){
-                        System.out.println("verified");
-                        verify = true;
-                        if (num.length()==16){
-                            // customer
-                            type = "customer";
-                            options(type);
-                        }else{
-                            // employee
-                            type = "employee";
-                            options(type);
-                        }
-                    } else {
-                        System.out.println("Verification Error");
-                    }         
-                } else{
-                    System.out.println("Input error.");
-                }
+            // take inputs 
+            //System.out.println("Enter card number: ");
+            num = card.getText();
+            //System.out.println("Enter password: ");          
+            pin = Integer.parseInt(new String(password.getPassword()));
+            // verification process
+            if (num!=null & pin != 0){
+                Card card = new Card(num, null, null, pin);
+                if (db.verifyUser(card, pin)){
+                    System.out.println("verified");
+                    // verify = true;
+                    if (num.length()==16){
+                        // customer
+                        type = "customer";
+                        options(type);
+                    }else{
+                        // employee
+                        type = "employee";
+                        options(type);
+                    }
+                } else {
+                    System.out.println("Verification Error");
+                }         
+            } else{
+                System.out.println("Input error.");
             }
+            
         }
     } 
 }
