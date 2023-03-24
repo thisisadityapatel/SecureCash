@@ -11,6 +11,29 @@ public class Transaction {
         this.account = account;
     }
 
+    public String getReceipt(Transaction t) {
+        String output = "";
+        output += "\n";
+        output += "-----------------------------\n";
+        output += "Date: " + t.getDate() + "\n";
+        output += "Account: " + t.getAccount().getAccountNumber() + "\n";
+        output += "Amount: " + amount + "\n";
+        output += "-----------------------------\n";
+        return output;
+    }
+
+    public String getReceipt(Transaction t1, Transaction t2) {
+        String output = "";
+        output += "\n";
+        output += "-----------------------------\n";
+        output += "Date: " + date + "\n";
+        output += "Transfer From Account: " + t1.getAccount().getAccountNumber() + "\n";
+        output += "Transfer To Account: " + t2.getAccount().getAccountNumber() + "\n";
+        output += "Amount: " + amount + "\n";
+        output += "-----------------------------\n";
+        return output;
+    }
+
     public String getDate() {
         return date;
     }
