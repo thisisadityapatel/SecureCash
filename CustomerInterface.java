@@ -8,17 +8,17 @@ public class CustomerInterface {
     }
 
     // deposit amount
-    public boolean deposit(Customer customer, double amount, String accountType) {
+    public String deposit(Customer customer, double amount, String accountType) {
         return this.atm.depositAmount(customer, amount, accountType);
     }
 
     // withrdaw amount
-    public boolean withdraw(Customer customer, double amount, String accountType) {
+    public String withdraw(Customer customer, double amount, String accountType) {
         return this.atm.withdrawAmount(customer, amount, accountType);
     }
 
     // transfer amount
-    public boolean transfer(Customer sender, Customer receiver, double amount, String senderAccType,
+    public String transfer(Customer sender, Customer receiver, double amount, String senderAccType,
             String recipientAccType) {
         return this.atm.transferAmount(sender, receiver, amount, senderAccType, recipientAccType);
     }
@@ -34,8 +34,8 @@ public class CustomerInterface {
     }
 
     // pay bill
-    public boolean payBill(Customer customer, double amount, String accType) {
-        return this.atm.withdrawAmount(customer, amount, accType);
+    public String payBill(Customer customer, double amount, String accType) {
+        return this.atm.BillPayment(customer, amount, accType);
     }
 
     // print account statement
