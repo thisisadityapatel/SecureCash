@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class Database {
+    // private database variable
     private int databaseID;
 
     // access databaseID
@@ -17,7 +18,8 @@ public class Database {
     public Double getLastAtmBalance() {
         Double returnAmount = 0.0;
         try {
-            File file = new File("atmBalanceDatabase.txt");
+            String filename = "atmBalanceDatabase.txt";
+            File file = new File(filename);
             Scanner in = new Scanner(file);
 
             while (in.hasNextLine()) {
@@ -25,11 +27,12 @@ public class Database {
             }
             in.close();
         } catch (IOException io) {
-            System.out.println(io.getMessage()); // printing error, if any
+            System.out.println(io.getMessage()); // print error, if any
         }
         return returnAmount;
     }
 
+    // method to update ATM balance
     public boolean updateLastAtmBalance(Double amount) {
         try {
             FileWriter fw = new FileWriter("atmBalanceDatabase.txt", false);
@@ -39,13 +42,13 @@ public class Database {
             pw.flush();
             pw.close();
             return true;
-        } catch (IOException err) {
+        } catch (IOException err) { // print error, if any
             System.out.println(err.getMessage());
         }
         return false;
     }
 
-    // verify user from database
+    // verify user credentials from database
     public boolean verifyUser(Card card, int verifyPin) {
         try {
             File file = new File("bankDatabase.txt");
@@ -60,6 +63,8 @@ public class Database {
                     in.close(); // terminating file stream
                     return true;
                 }
+
+                // skipping to the next customer
                 for (int i = 0; i < 7; i++) {
                     in.nextLine();
                 }
@@ -71,7 +76,7 @@ public class Database {
         return false;
     }
 
-    // retrieve account details from database
+    // retrieve all the accounts of the customer from the database
     public List<Integer> retrieveAccounts(int custID) {
         List<String> tempAcc = new ArrayList<String>();
         try {
@@ -82,7 +87,9 @@ public class Database {
                 for (int i = 0; i < 2; i++) {
                     in.nextLine();
                 }
+
                 int customerId = Integer.parseInt(in.nextLine());
+
                 // id verification
                 if (custID == customerId) {
                     tempAcc = Arrays.asList(in.nextLine().split(","));
@@ -93,19 +100,35 @@ public class Database {
                     in.close();
                     return outputAccounts;
                 }
+
+                // skipping to the next customer
                 for (int i = 0; i < 6; i++) {
                     in.nextLine();
                 }
             }
             in.close();
-        } catch (IOException io) {
+        } catch (IOException io) { // print error, if any
             System.out.println(io.getMessage());
         }
         return new ArrayList<Integer>();
     }
 
-    // updating the user account amount
+    // method to update user account amount in database
     public Boolean updateAccountAmount(Account account, double newAmount) {
+
+        /**
+         * Here's how the method works:
+         * 1) It first creates a new file named "tempDatabase.txt" and copies the
+         * contents of the existing "bankDatabase.txt" file into it.
+         * 2) It searches for the specific customer in the new file, updates their
+         * information, and writes the changes to the new file.
+         * 3) It then closes the streams for both files to ensure that all changes are
+         * saved properly.
+         * 4) It deletes the original "bankDatabase.txt" file.
+         * 5) Finally, it renames the new file to "bankDatabase.txt", effectively
+         * replacing the old file with the updated one.
+         **/
+
         String oldfilename = "bankDatabase.txt";
         String tempname = "tempDatabase.txt";
 
@@ -156,8 +179,22 @@ public class Database {
         return true;
     }
 
-    // updating the user PIN
+    // updating the user PIN in the database
     public boolean updatePin(Card card, int newPin) {
+
+        /**
+         * Here's how the method works:
+         * 1) It first creates a new file named "tempDatabase.txt" and copies the
+         * contents of the existing "bankDatabase.txt" file into it.
+         * 2) It searches for the specific customer in the new file, updates their
+         * information, and writes the changes to the new file.
+         * 3) It then closes the streams for both files to ensure that all changes are
+         * saved properly.
+         * 4) It deletes the original "bankDatabase.txt" file.
+         * 5) Finally, it renames the new file to "bankDatabase.txt", effectively
+         * replacing the old file with the updated osne.
+         **/
+
         String oldfilename = "bankDatabase.txt";
         String tempname = "tempDatabase.txt";
 
@@ -224,6 +261,8 @@ public class Database {
 
             while (in.hasNextLine()) {
                 int accountNumber = Integer.parseInt(in.nextLine());
+
+                // verifying the account
                 if (accountNumber == verifyAccountNumber) {
                     double amount = Double.parseDouble(in.nextLine());
                     String date = in.nextLine();
@@ -231,9 +270,9 @@ public class Database {
                     in.nextLine();
                     output.add(temp);
                 } else {
-                    in.nextLine();
-                    in.nextLine();
-                    in.nextLine();
+                    for (int i = 0; i < 3; i++) {
+                        in.nextLine();
+                    }
                 }
             }
             in.close(); // closing the stream
@@ -294,29 +333,28 @@ public class Database {
     }
 
     public static void main(String[] args) {
-        System.out.println("Hey there!!");
         Database testing = new Database();
 
-        // Card temp = new Card("1234123412341234", "Aditya", "");
-        // System.out.println(testing.verifyUser(temp, 1234));
+        // Card temp = new Card("4321432143214321", "Aditya", "", 1234);
+        // System.out.println(testing.verifyUser(temp, 7891));
 
-        // System.out.println(testing.retrieveAccounts(12345));
+        // System.out.println(testing.retrieveAccounts(56789));
 
-        // System.out.println(testing.updateAccountAmount(new Account(1234765, 0, 0.0,
-        // null), 100000.00));
+        // System.out.println(testing.updateAccountAmount(new Account(1234567, 0, 0.0,
+        // null), 100560.25));
 
-        // System.out.println(testing.updatePin(new Card("1234123412341234", "", "",
-        // 1234), 1357));
+        // System.out.println(testing.updatePin(new Card("1235123512", "", "", 1234),
+        // 12334));
 
-        // testing.addAccountTransaction(new Transaction("21122002", 120.5, new
-        // Customer(12345, null, null, null),
-        // new Account(1234569, 0, 0, null)));
+        // testing.addAccountTransaction(new Transaction("21/12/2002", -120.5, null, new
+        // Account(1234569, 0, 0, null)));
 
         // System.out.println(testing.extractDatabase());
 
-        // System.out.println(testing.getLastAtmBalance());
+        System.out.println(testing.getLastAtmBalance());
 
-        // System.out.println(testing.updateLastAtmBalance(2002.35));
-        System.out.println(testing.getStatement(7234567));
+        // System.out.println(testing.updateLastAtmBalance(200002.35));
+
+        // System.out.println(testing.getStatement(1234115).get(0).getDate());
     }
 }
