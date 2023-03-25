@@ -1,0 +1,4 @@
+[Account Number]  //7 digit integer number
+[Amount] //Double Amount
+[Date]  //String
+[" " - Empty Space String]
