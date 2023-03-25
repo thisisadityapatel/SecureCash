@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Database {
@@ -225,11 +224,11 @@ public class Database {
 
             while (in.hasNextLine()) {
                 int accountNumber = Integer.parseInt(in.nextLine());
-
                 if (accountNumber == verifyAccountNumber) {
                     double amount = Double.parseDouble(in.nextLine());
                     String date = in.nextLine();
                     Transaction temp = new Transaction(date, amount, null, null);
+                    in.nextLine();
                     output.add(temp);
                 } else {
                     in.nextLine();
@@ -317,6 +316,7 @@ public class Database {
 
         // System.out.println(testing.getLastAtmBalance());
 
-        System.out.println(testing.updateLastAtmBalance(2002.35));
+        // System.out.println(testing.updateLastAtmBalance(2002.35));
+        System.out.println(testing.getStatement(7234567));
     }
 }
