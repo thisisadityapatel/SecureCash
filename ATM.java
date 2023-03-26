@@ -1,5 +1,10 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+
 
 public class ATM {
 
@@ -14,7 +19,15 @@ public class ATM {
     // constructor
     public ATM(Database db) {
         this.db = db;
-        this.cashTotal = LIMIT / 2;
+        this.cashTotal = db.getLastAtmBalance();
+    }
+
+    // rounding function
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     // deposit to customer
@@ -25,29 +38,31 @@ public class ATM {
                 return "Cannot Deposit: ATM Cash Limit reached.";
             }
             cashTotal = dbBalance;
-            customer.getSavingsAccount().setBalance(customer.getSavingsAccount().getBalance() + amount);
+            db.updateLastAtmBalance(round(cashTotal,2));
+            customer.getSavingsAccount().setBalance(round(customer.getSavingsAccount().getBalance() + amount, 2));
             // updating database
-            db.updateAccountAmount(customer.getSavingsAccount(), customer.getSavingsAccount().getBalance() + amount);
+            db.updateAccountAmount(customer.getSavingsAccount(), round(customer.getSavingsAccount().getBalance(), 2));
             // adding transaction
-            Transaction tr = new Transaction(finalDate, amount, customer, customer.getSavingsAccount());
+            Transaction tr = new Transaction(finalDate, round(amount, 2), customer, customer.getSavingsAccount());
             db.addAccountTransaction(tr);
             // return Transaction
-            return "Deposit Successful";
+            return tr.getReceipt(tr);
         } else {
             double dbBalance = amount + cashTotal;
             if (dbBalance > LIMIT) {
                 return "Cannot Deposit: ATM Cash Limit reached.";
             }
             cashTotal = dbBalance;
-            customer.getChequeingsAccount().setBalance(customer.getChequeingsAccount().getBalance() + amount);
+            db.updateLastAtmBalance(round(cashTotal,2));
+            customer.getChequeingsAccount().setBalance(round(customer.getChequeingsAccount().getBalance() + amount,2));
             // updating database
             db.updateAccountAmount(customer.getChequeingsAccount(),
-                    customer.getChequeingsAccount().getBalance() + amount);
+                    round(customer.getChequeingsAccount().getBalance(),2));
             // adding transaction
-            Transaction tr = new Transaction(finalDate, amount, customer, customer.getChequeingsAccount());
+            Transaction tr = new Transaction(finalDate, round(amount,2), customer, customer.getChequeingsAccount());
             db.addAccountTransaction(tr);
             // return Transaction
-            return "Deposit Successful";
+            return tr.getReceipt(tr);
         }
     }
 
@@ -63,13 +78,14 @@ public class ATM {
                 return "ATM out of Balance.";
             }
             cashTotal = newDBbalance;
-            customer.getSavingsAccount().setBalance(newBalance);
+            db.updateLastAtmBalance(round(cashTotal,2));
+            customer.getSavingsAccount().setBalance(round(newBalance,2));
             // updating database
-            db.updateAccountAmount(customer.getSavingsAccount(), newBalance);
+            db.updateAccountAmount(customer.getSavingsAccount(), round(newBalance,2));
             // adding transaction
-            Transaction tr = new Transaction(finalDate, -1 * amount, customer, customer.getSavingsAccount());
+            Transaction tr = new Transaction(finalDate, round(-1 * amount,2), customer, customer.getSavingsAccount());
             db.addAccountTransaction(tr);
-            return "Withdrawal Successful";
+            return tr.getReceipt(tr);
         } else {
             double newBalance = customer.getChequeingsAccount().getBalance() - amount;
             double newDBbalance = cashTotal - amount;
@@ -80,13 +96,14 @@ public class ATM {
                 return "ATM out of Balance.";
             }
             cashTotal = newDBbalance;
-            customer.getChequeingsAccount().setBalance(newBalance);
+            db.updateLastAtmBalance(round(cashTotal,2));
+            customer.getChequeingsAccount().setBalance(round(newBalance,2));
             // updating database
-            db.updateAccountAmount(customer.getChequeingsAccount(), newBalance);
+            db.updateAccountAmount(customer.getChequeingsAccount(), round(newBalance,2));
             // adding transaction
-            Transaction tr = new Transaction(finalDate, -1 * amount, customer, customer.getChequeingsAccount());
+            Transaction tr = new Transaction(finalDate, round(-1 * amount,2), customer, customer.getChequeingsAccount());
             db.addAccountTransaction(tr);
-            return "Withdrawal Successful";
+            return tr.getReceipt(tr);
         }
     }
 
@@ -99,35 +116,35 @@ public class ATM {
                 return "Not enough Balance in Savings Account.";
             }
             // sender transaction
-            sender.getSavingsAccount().setBalance(newBalance);
+            sender.getSavingsAccount().setBalance(round(newBalance,2));
             // updating database
-            db.updateAccountAmount(sender.getSavingsAccount(), newBalance);
+            db.updateAccountAmount(sender.getSavingsAccount(), round(newBalance,2));
             // adding transaction
-            Transaction trSender = new Transaction(finalDate, -1 * amount, sender, sender.getSavingsAccount());
+            Transaction trSender = new Transaction(finalDate, round(-1 * amount,2), sender, sender.getSavingsAccount());
             db.addAccountTransaction(trSender);
 
             if (recipientAccType.equalsIgnoreCase("savings")) {
                 // receiver transaction
-                receiver.getSavingsAccount().setBalance(receiver.getSavingsAccount().getBalance() + amount);
+                receiver.getSavingsAccount().setBalance(round(receiver.getSavingsAccount().getBalance() + amount,2));
                 // updating database
                 db.updateAccountAmount(receiver.getSavingsAccount(),
-                        receiver.getSavingsAccount().getBalance() + amount);
+                        round(receiver.getSavingsAccount().getBalance(),2));
                 // adding transaction
-                Transaction trReceiver = new Transaction(finalDate, amount, receiver, receiver.getSavingsAccount());
+                Transaction trReceiver = new Transaction(finalDate, round(amount,2), receiver, receiver.getSavingsAccount());
                 db.addAccountTransaction(trReceiver);
                 // return transaction here
-                return "Transfer Successful";
+                return trSender.getReceipt(trSender, trReceiver);
             } else {
                 // receiver transaction
-                receiver.getChequeingsAccount().setBalance(receiver.getChequeingsAccount().getBalance() + amount);
+                receiver.getChequeingsAccount().setBalance(round(receiver.getChequeingsAccount().getBalance() + amount,2));
                 // updating database
                 db.updateAccountAmount(receiver.getChequeingsAccount(),
-                        receiver.getChequeingsAccount().getBalance() + amount);
+                        round(receiver.getChequeingsAccount().getBalance(),2));
                 // adding transaction
-                Transaction trReceiver = new Transaction(finalDate, amount, receiver, receiver.getChequeingsAccount());
+                Transaction trReceiver = new Transaction(finalDate, round(amount,2), receiver, receiver.getChequeingsAccount());
                 db.addAccountTransaction(trReceiver);
                 // return transaction here
-                return "Transfer Successful";
+                return trSender.getReceipt(trSender, trReceiver);
             }
         } else {
             double newBalance = sender.getChequeingsAccount().getBalance() - amount;
@@ -135,35 +152,35 @@ public class ATM {
                 return "Not enough Balance in Chequeing Account.";
             }
             // sender transaction
-            sender.getChequeingsAccount().setBalance(newBalance);
+            sender.getChequeingsAccount().setBalance(round(newBalance,2));
             // updating database
-            db.updateAccountAmount(sender.getChequeingsAccount(), newBalance);
+            db.updateAccountAmount(sender.getChequeingsAccount(), round(newBalance,2));
             // adding transaction
-            Transaction trSender = new Transaction(finalDate, -1 * amount, sender, sender.getChequeingsAccount());
+            Transaction trSender = new Transaction(finalDate, round(-1 * amount,2), sender, sender.getChequeingsAccount());
             db.addAccountTransaction(trSender);
 
             if (recipientAccType.equalsIgnoreCase("savings")) {
                 // receiver transaction
-                receiver.getSavingsAccount().setBalance(receiver.getSavingsAccount().getBalance() + amount);
+                receiver.getSavingsAccount().setBalance(round(receiver.getSavingsAccount().getBalance() + amount,2));
                 // updating database
                 db.updateAccountAmount(receiver.getSavingsAccount(),
-                        receiver.getSavingsAccount().getBalance() + amount);
+                        round(receiver.getSavingsAccount().getBalance(),2));
                 // adding transaction
-                Transaction trReceiver = new Transaction(finalDate, amount, receiver, receiver.getSavingsAccount());
+                Transaction trReceiver = new Transaction(finalDate, round(amount,2), receiver, receiver.getSavingsAccount());
                 db.addAccountTransaction(trReceiver);
                 // return transaction here
-                return "Transfer Successful";
+                return trSender.getReceipt(trSender, trReceiver);
             } else {
                 // receiver transaction
-                receiver.getChequeingsAccount().setBalance(receiver.getChequeingsAccount().getBalance() + amount);
+                receiver.getChequeingsAccount().setBalance(round(receiver.getChequeingsAccount().getBalance() + amount,2));
                 // updating database
                 db.updateAccountAmount(receiver.getChequeingsAccount(),
-                        receiver.getChequeingsAccount().getBalance() + amount);
+                        round(receiver.getChequeingsAccount().getBalance(),2));
                 // adding transaction
-                Transaction trReceiver = new Transaction(finalDate, amount, receiver, receiver.getChequeingsAccount());
+                Transaction trReceiver = new Transaction(finalDate, round(amount,2), receiver, receiver.getChequeingsAccount());
                 db.addAccountTransaction(trReceiver);
                 // return transaction here
-                return "Transfer Successful";
+                return trSender.getReceipt(trSender, trReceiver);
             }
         }
     }
@@ -179,8 +196,10 @@ public class ATM {
 
     // change customer pin
     public boolean changeAccountPin(Customer customer, int newPin) {
-        return customer.getCard().setPin(newPin);
-
+        if (customer.getCard().setPin(newPin) == true) {
+            db.updatePin(customer.getCard(), newPin);
+        }
+        return false;
     }
 
     public String BillPayment(Customer customer, double amount, String accType) {
@@ -189,39 +208,72 @@ public class ATM {
             if (newBalance < 0) {
                 return "Not enough Balance in Savings Account.";
             }
-            customer.getSavingsAccount().setBalance(newBalance);
+            customer.getSavingsAccount().setBalance(round(newBalance,2));
             // updating database
-            db.updateAccountAmount(customer.getSavingsAccount(), newBalance);
+            db.updateAccountAmount(customer.getSavingsAccount(), round(newBalance,2));
             // adding transaction
-            Transaction tr = new Transaction(finalDate, -1 * amount, customer, customer.getSavingsAccount());
+            Transaction tr = new Transaction(finalDate, round(-1 * amount,2), customer, customer.getSavingsAccount());
             db.addAccountTransaction(tr);
-            return "Payment Successful";
+            return tr.getReceipt(tr);
         } else {
             double newBalance = customer.getChequeingsAccount().getBalance() - amount;
             if (newBalance < 0) {
                 return "Not enough Balance in Chequeing Account.";
             }
-            customer.getChequeingsAccount().setBalance(newBalance);
+            customer.getChequeingsAccount().setBalance(round(newBalance,2));
             // updating database
-            db.updateAccountAmount(customer.getChequeingsAccount(), newBalance);
+            db.updateAccountAmount(customer.getChequeingsAccount(), round(newBalance,2));
             // adding transaction
-            Transaction tr = new Transaction(finalDate, -1 * amount, customer, customer.getChequeingsAccount());
+            Transaction tr = new Transaction(finalDate, round(-1 * amount,2), customer, customer.getChequeingsAccount());
             db.addAccountTransaction(tr);
-            return "Payment Successful";
+            return tr.getReceipt(tr);
+        }
+    }
+
+    public String getLog(Customer customer, String accType) {
+        if (accType.equalsIgnoreCase("savings")) {
+            ArrayList<Transaction> tr = db.getStatement(customer.getSavingsAccount().getAccountNumber());
+            String temp = "";
+            for (Transaction t : tr) {
+                Transaction newT = new Transaction(t.getDate(), t.getAmount(), customer, customer.getSavingsAccount());
+                temp = temp + newT.getReceipt(newT) + "\n";
+            }
+            return temp;
+        } else {
+            ArrayList<Transaction> tr = db.getStatement(customer.getChequeingsAccount().getAccountNumber());
+            String temp = "";
+            for (Transaction t : tr) {
+                Transaction newT = new Transaction(t.getDate(), t.getAmount(), customer,
+                        customer.getChequeingsAccount());
+                temp = temp + newT.getReceipt(newT) + "\n";
+            }
+            return temp;
         }
     }
 
     // set ATM Balance
     public double setCashTotal(double amount) {
-        double newTotal = this.getCashTotal() + amount;
+        double newTotal = db.getLastAtmBalance() + amount;
         if (newTotal <= LIMIT) {
             this.cashTotal = newTotal;
+            db.updateLastAtmBalance(round(cashTotal,2));
             return 0.0;
         } else {
             double extraAmount = newTotal - LIMIT;
             this.cashTotal = LIMIT;
+            db.updateLastAtmBalance(round(cashTotal,2));
             return extraAmount;
         }
+    }
+
+    public double employeeWithdraw(double amount){
+        double newDBbalance = db.getLastAtmBalance() - amount;
+        if (newDBbalance < 0 | amount > LIMIT){
+            return -1.0;
+        }
+        setCashTotal(round(newDBbalance,2));
+        db.updateLastAtmBalance(round(newDBbalance,2));
+        return amount;
     }
 
     public double getCashTotal() {
