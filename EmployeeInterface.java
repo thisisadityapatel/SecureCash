@@ -12,6 +12,11 @@ public class EmployeeInterface {
         return this.atm.setCashTotal(amount);
     }
 
+    // employee withdraw cash
+    public double withdrawATM(double amount){
+        return this.atm.employeeWithdraw(amount);
+    }
+
     // get ATM balance
     public double getATMBalance() {
         return this.atm.getCashTotal();
