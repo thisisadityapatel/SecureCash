@@ -39,9 +39,8 @@ public class CustomerInterface {
     }
 
     // print account statement
-    public boolean printStatement() {
-        // database not complete
-        return false;
+    public String printStatement(Customer customer, String accountNum) {
+        return this.atm.getLog(customer, accountNum);
     }
 
     // request to display help
