@@ -1,8 +1,11 @@
+package App;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.print.attribute.standard.RequestingUserName;
 
 
 
@@ -35,7 +38,7 @@ public class ATM {
         if (accountType.equalsIgnoreCase("savings")) {
             double dbBalance = amount + cashTotal;
             if (dbBalance > LIMIT) {
-                return "Cannot Deposit: ATM Cash Limit reached.";
+                return "ATM Cash Limit reached.";
             }
             cashTotal = dbBalance;
             db.updateLastAtmBalance(round(cashTotal,2));
@@ -47,10 +50,10 @@ public class ATM {
             db.addAccountTransaction(tr);
             // return Transaction
             return tr.getReceipt(tr);
-        } else {
+        } else if (accountType.equalsIgnoreCase("checking")) {
             double dbBalance = amount + cashTotal;
             if (dbBalance > LIMIT) {
-                return "Cannot Deposit: ATM Cash Limit reached.";
+                return "ATM Cash Limit reached.";
             }
             cashTotal = dbBalance;
             db.updateLastAtmBalance(round(cashTotal,2));
@@ -63,6 +66,8 @@ public class ATM {
             db.addAccountTransaction(tr);
             // return Transaction
             return tr.getReceipt(tr);
+        } else {
+            return "";
         }
     }
 
@@ -72,7 +77,7 @@ public class ATM {
             double newBalance = customer.getSavingsAccount().getBalance() - amount;
             double newDBbalance = cashTotal - amount;
             if (newBalance < 0) {
-                return "Not enough Balance in Savings Account.";
+                return "Not enough Balance in Savings.";
             }
             if (newDBbalance < 0) {
                 return "ATM out of Balance.";
@@ -86,11 +91,11 @@ public class ATM {
             Transaction tr = new Transaction(finalDate, round(-1 * amount,2), customer, customer.getSavingsAccount());
             db.addAccountTransaction(tr);
             return tr.getReceipt(tr);
-        } else {
+        } else if (accountType.equalsIgnoreCase("checking")) {
             double newBalance = customer.getChequeingsAccount().getBalance() - amount;
             double newDBbalance = cashTotal - amount;
             if (newBalance < 0) {
-                return "Not enough Balance in Chequeing Account.";
+                return "Not enough Balance in Checking.";
             }
             if (newDBbalance < 0) {
                 return "ATM out of Balance.";
@@ -104,16 +109,17 @@ public class ATM {
             Transaction tr = new Transaction(finalDate, round(-1 * amount,2), customer, customer.getChequeingsAccount());
             db.addAccountTransaction(tr);
             return tr.getReceipt(tr);
+        } else {
+            return "";
         }
     }
 
     // transfer from sender to receiver
-    public String transferAmount(Customer sender, Customer receiver, double amount, String senderAccType,
-            String recipientAccType) {
+    public String transferAmount(Customer sender, Customer receiver, double amount, String senderAccType, String recipientAccType) {
         if (senderAccType.equalsIgnoreCase("savings")) {
             double newBalance = sender.getSavingsAccount().getBalance() - amount;
             if (newBalance < 0) {
-                return "Not enough Balance in Savings Account.";
+                return "Not enough Balance in Savings.";
             }
             // sender transaction
             sender.getSavingsAccount().setBalance(round(newBalance,2));
@@ -134,7 +140,7 @@ public class ATM {
                 db.addAccountTransaction(trReceiver);
                 // return transaction here
                 return trSender.getReceipt(trSender, trReceiver);
-            } else {
+            } else if (recipientAccType.equalsIgnoreCase("checking")) {
                 // receiver transaction
                 receiver.getChequeingsAccount().setBalance(round(receiver.getChequeingsAccount().getBalance() + amount,2));
                 // updating database
@@ -149,7 +155,7 @@ public class ATM {
         } else {
             double newBalance = sender.getChequeingsAccount().getBalance() - amount;
             if (newBalance < 0) {
-                return "Not enough Balance in Chequeing Account.";
+                return "Not enough Balance in Chequeing.";
             }
             // sender transaction
             sender.getChequeingsAccount().setBalance(round(newBalance,2));
@@ -183,6 +189,8 @@ public class ATM {
                 return trSender.getReceipt(trSender, trReceiver);
             }
         }
+
+        return "";
     }
 
     // get customer balance
@@ -196,17 +204,20 @@ public class ATM {
 
     // change customer pin
     public boolean changeAccountPin(Customer customer, int newPin) {
+        if ((customer.getCard().getPin() == newPin) || (Integer.toString(newPin).length() != 4)) {
+            return false;
+        }
         if (customer.getCard().setPin(newPin) == true) {
             db.updatePin(customer.getCard(), newPin);
         }
-        return false;
+        return true;
     }
 
     public String BillPayment(Customer customer, double amount, String accType) {
         if (accType.equalsIgnoreCase("savings")) {
             double newBalance = customer.getSavingsAccount().getBalance() - amount;
             if (newBalance < 0) {
-                return "Not enough Balance in Savings Account.";
+                return "Not enough Balance in Savings.";
             }
             customer.getSavingsAccount().setBalance(round(newBalance,2));
             // updating database
@@ -218,7 +229,7 @@ public class ATM {
         } else {
             double newBalance = customer.getChequeingsAccount().getBalance() - amount;
             if (newBalance < 0) {
-                return "Not enough Balance in Chequeing Account.";
+                return "Not enough Balance in Chequeing.";
             }
             customer.getChequeingsAccount().setBalance(round(newBalance,2));
             // updating database
@@ -268,11 +279,14 @@ public class ATM {
 
     public double employeeWithdraw(double amount){
         double newDBbalance = db.getLastAtmBalance() - amount;
-        if (newDBbalance < 0 | amount > LIMIT){
+        if (amount > LIMIT){
             return -1.0;
         }
-        setCashTotal(round(newDBbalance,2));
+        if (newDBbalance < 0){
+            return -1.0;
+        }
         db.updateLastAtmBalance(round(newDBbalance,2));
+        this.cashTotal = db.getLastAtmBalance();
         return amount;
     }
 

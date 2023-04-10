@@ -1,3 +1,4 @@
+package App;
 public class Transaction {
     private String date;
     private Double amount;

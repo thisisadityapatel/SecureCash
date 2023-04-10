@@ -1,12 +1,11 @@
-public class CreditAccount extends Account {
+package App;
+public class SavingsAccount extends Account {
 
     private double interestRate;
-    private double limit;
 
-    public CreditAccount(int accountNumber, int clientID, double balance, Transaction transactions, double interestRate,
-            double limit) {
+    public SavingsAccount(int accountNumber, int clientID, double balance, Transaction transactions,
+            double interestRate) {
         super(accountNumber, clientID, balance, transactions);
-        this.limit = limit;
         this.interestRate = interestRate;
     }
 

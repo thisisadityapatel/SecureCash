@@ -1,3 +1,4 @@
+package App;
 public class Customer {
     private int customerID;
     private SavingsAccount savingsAccount;

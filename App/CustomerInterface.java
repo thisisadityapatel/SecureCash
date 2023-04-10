@@ -1,3 +1,4 @@
+package App;
 public class CustomerInterface {
 
     ATM atm;
