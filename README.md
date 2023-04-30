@@ -1,27 +1,23 @@
-# Introduction:
+Java GUI ATM System
+This is a Java-based graphical user interface (GUI) ATM system that enables secure and easier transactions. This system can be easily set up on your computer, and you can start using it right away.
 
-Setting up the ATM system: 
+Getting Started
+Prerequisites
+To run this system, you will need Java installed on your computer. You can download and install Java from the official website.
 
-To set up the proper paths for the database, go into Database.java and change the String called absolutePath
-on line 14 to the absolute path leading to the CPS406_BANK_ATM_SYSTEM folder on your computer. 
+Installation
+Clone this repository to your local machine.
+Open the project in your preferred Java IDE.
+In the Database.java file, update the absolutePath variable on line 14 with the absolute path leading to the CPS406_BANK_ATM_SYSTEM folder on your computer.
+Run the ATMSystemMain.java file to launch the ATM system.
+Using the ATM System
+Logging In
+To log in to the system as a customer, enter the customer card number and pin into the first and second text fields on the login screen, respectively. You can find the customer card number and pin in the bankDatabase.txt file. The first line contains the customer card number, and the second line contains the pin.
 
-Starting up the app: 
+To log in to the system as an employee, enter the employee ID and pin into the first and second text fields on the login screen, respectively. You can find the employee ID and pin in the bankDatabase.txt file. The 19th line contains the employee ID, and the 20th line contains the pin.
 
-Run the ATMSystemMain.java file and the app should pop up in a new window. 
+Understanding the Database
+The bankDatabase.txt file contains information about the customers and employees in the system. To understand the organization of this file, refer to the databaseSchema.txt file.
 
-Logging in to the System: 
-
-To log into the system as a customer, go into bankDatabase.txt and the first line in the file is a customer 
-card number. Enter this number in the first text field in the log in screen. The second line is the customer's 
-pin. Enter this value into the second text field on the login screen. 
-
-To log into the system as an employee, go into bankDatabase.txt. On line 19 there is an employee ID. Enter this 
-number in the first text field on the login screen. On line 20 there is an employee pin. Enter this number into 
-the second text field on the login screen.  
-
-To understand the organization of bankDatabase.txt, see databaseSchema.txt.
-
-Running the test cases: 
-
-If you have Unit testing for Java enabled in your VS code, simply click on the testing tab, then click on the
-run tests button at the top of the testing menu. 
+Running Test Cases
+If you have unit testing for Java enabled in your preferred IDE, you can run the test cases by clicking on the testing tab and then clicking on the "run tests" button at the top of the testing menu. This will help you ensure that the system is working properly.
