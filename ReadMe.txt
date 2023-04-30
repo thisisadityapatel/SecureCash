@@ -1,4 +1,4 @@
-# SecureCash ATM:
+# Introduction:
 
 Setting up the ATM system: 
 
