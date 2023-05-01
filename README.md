@@ -1,6 +1,6 @@
 # Java GUI ATM System:
 
-This is a Java-based graphical user interface (GUI) ATM system that enables secure and easier transactions. This system can be easily set up on your computer, and you can start using it right away.
+Java-based graphical user interface (GUI) ATM system that enables secure and easier transactions. This system can be easily set up on your computer, and you can start using it right away.
 
 # Getting Started:
 Prerequisites
