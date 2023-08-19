@@ -2,6 +2,10 @@
 
 Java-based graphical user interface (GUI) ATM system that enables secure and easier transactions. This system can be easily set up on your computer, and you can start using it right away.
 
+# System Design and Use Case Diagrams
+
+
+
 # Getting Started:
 Prerequisites
 To run this system, you will need Java installed on your computer. You can download and install Java from the official website.
