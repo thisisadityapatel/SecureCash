@@ -4,7 +4,23 @@ Java-based graphical user interface (GUI) ATM system that enables secure and eas
 
 # System Design and Use Case Diagrams
 
+<p align="center">
+  <kbd>
+    <img src="./ATM_System.png" alt="Alt Text" width="700" style="border: 2px solid gray">
+  </kbd>
+</p>
 
+<p align="center">
+  <kbd>
+    <img src="./Use_Case_Diagram_-_Main_Menu.png" alt="Alt Text" width="700" style="border: 2px solid gray">
+  </kbd>
+</p>
+
+<p align="center">
+  <kbd>
+    <img src="./Use_Case_Diagram_Submenu.png" alt="Alt Text" width="700" style="border: 2px solid gray">
+  </kbd>
+</p>
 
 # Getting Started:
 Prerequisites
